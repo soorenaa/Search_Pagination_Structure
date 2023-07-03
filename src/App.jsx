@@ -1,10 +1,31 @@
+import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { getAllImagePosts } from "./api/services";
+import Pagination from "./common/paginaton/Pagination";
+import { Search, ImageBox } from "./components/index";
+import MainLayout from "./layout/MainLayoute";
 
+function App({ pageTitle }) {
+  const [post, setPost] = useState([]);
+  const [query, setQuery] = useState({ text: "" });
+  const [getFilteredContacts, setFilteredContacts] = useState([]);
 
-import { Helmet } from 'react-helmet-async';
-import { Search, ImageBox } from './components/index';
-import MainLayout from './layout/MainLayoute';
+  useEffect(() => {
+    getAllImagePosts().then((result) => {
+      setPost(result.data);
+    });
+  }, []);
 
-function App({pageTitle}) {
+  const contactSearch = (event) => {
+    setQuery({ ...query, text: event.target.value });
+    const allData = post.filter((post) => {
+      return post.user.first_name
+        .toLowerCase()
+        .includes(event.target.value.toLowerCase());
+    });
+    setFilteredContacts(allData);
+    console.log(getFilteredContacts);
+  };
 
   return (
     <>
@@ -13,13 +34,16 @@ function App({pageTitle}) {
           <title>{pageTitle}</title>{" "}
         </Helmet>
 
-        <Search />
-        <ImageBox />
+        <Search query={query} search={contactSearch} />
 
-
+        {query.text ? (
+          <ImageBox currentPosts={getFilteredContacts} />
+        ) : (
+          <Pagination postPerPage={9} post={post} />
+        )}
       </MainLayout>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

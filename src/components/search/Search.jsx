@@ -1,6 +1,6 @@
 import des from '../../assets/images/des.jpg';
 import "./searchStyle.css"
-const Search = () => {
+const Search = ({query,search}) => {
     return (
         <>
 
@@ -9,7 +9,7 @@ const Search = () => {
             </div>
 
             <div id='search_box'>
-                    <input type="text" placeholder='Type Here ...'  />
+                    <input type="text" placeholder='Type Here ...' value={query.text} onChange={search} />
             </div>
 
         </>
